@@ -1,0 +1,101 @@
+import React from 'react';
+import { createDevApp } from '@backstage/dev-utils';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { Entity } from '@backstage/catalog-model';
+import { endOfLifeApiRef, endOfLifePlugin, EntityEndOfLifeCard } from '../src';
+import { Content, PageWithHeader } from '@backstage/core-components';
+import { DateLegend } from '../src/components/DateLegend/DateLegend';
+import { TestEndOfLifeClient } from './TestEndOfLifeClient';
+
+const entityTemplate = (productsAnnotation: string): Entity => {
+  return {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Resource',
+    metadata: {
+      name: 'example',
+      annotations: {
+        'endoflife.date/products': productsAnnotation,
+      },
+    },
+    spec: {},
+  };
+};
+
+const annotationsUnderTest = [
+  'angular',
+  'rhel',
+  'postgresql,prometheus',
+  'rabbitmq@3.12',
+  'mssqlserver@2022,mysql@8.2',
+  'python',
+  'ruby',
+  'redhat-build-of-openjdk',
+  'nokia',
+  'unity',
+  'haproxy',
+  'azure-kubernetes-service',
+  'coldfusion',
+  'kindle',
+  'ios',
+  'iphone',
+  'bootstrap',
+  'filemaker',
+  'internet-explorer',
+  'kong-gateway',
+  'oracle-jdk',
+  'oracle-database',
+  'red-hat-openshift',
+  'spring-framework',
+  'ubuntu',
+];
+
+const builder = createDevApp()
+  .registerPlugin(endOfLifePlugin)
+  .registerApi({
+    api: endOfLifeApiRef,
+    deps: {},
+    factory: () =>
+      new TestEndOfLifeClient({ baseUrl: 'https://endoflife.date' }),
+  })
+  .addPage({
+    element: (
+      <PageWithHeader title="Test" themeId="tool">
+        <Content>
+          <DateLegend />
+        </Content>
+      </PageWithHeader>
+    ),
+    title: 'DateLegend',
+    path: '/datelegend',
+  })
+  .addPage({
+    element: (
+      <EntityProvider entity={entityTemplate('use-cases')}>
+        <PageWithHeader title="Test" themeId="tool">
+          <Content>
+            <EntityEndOfLifeCard />
+          </Content>
+        </PageWithHeader>
+      </EntityProvider>
+    ),
+    title: 'use-cases',
+    path: `/use-cases`,
+  });
+
+for (const annotation of annotationsUnderTest) {
+  builder.addPage({
+    element: (
+      <EntityProvider entity={entityTemplate(annotation)}>
+        <PageWithHeader title="Test" themeId="tool">
+          <Content>
+            <EntityEndOfLifeCard />
+          </Content>
+        </PageWithHeader>
+      </EntityProvider>
+    ),
+    title: annotation,
+    path: `/${annotation}`,
+  });
+}
+
+builder.render();

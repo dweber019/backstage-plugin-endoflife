@@ -1,0 +1,133 @@
+# End of life Plugin
+
+Welcome to the end of life plugin!
+
+This plugin will show end of life data for entities from [endoflife.date](https://endoflife.date/).
+
+![OpenShift](https://raw.githubusercontent.com/dweber019/backstage-plugin-endoflife/main/plugins/endoflife/docs/example-open-shift.png)
+![Python](https://raw.githubusercontent.com/dweber019/backstage-plugin-endoflife/main/plugins/endoflife/docs/example-python.png)
+
+## Setup
+
+1. Install this plugin:
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/app add @dweber019/backstage-plugin-endoflife
+```
+
+### Annotation
+
+You can use the annotation `endoflife.date/products` to define products at [endoflife.date](https://endoflife.date/).  
+Use the product name in the [url address (e.g. angular)](https://endoflife.date/angular) for your annotation.
+
+```yaml
+apiVersion: 'backstage.io/v1alpha1'
+kind: 'Resource'
+metadata:
+  name: 'technology-radar-angular'
+  annotations:
+    'endoflife.date/products': angular
+```
+
+You can even use multiple products with a comma separated list.
+
+```yaml
+apiVersion: 'backstage.io/v1alpha1'
+kind: 'Component'
+metadata:
+  name: 'angular-app'
+  annotations:
+    'endoflife.date/products': angular,nginx
+```
+
+Additionally, you can specify the version by using the [release column](https://endoflife.date/angular) (in the API called cycle).
+
+```yaml
+apiVersion: 'backstage.io/v1alpha1'
+kind: 'Component'
+metadata:
+  name: 'angular-app'
+  annotations:
+    'endoflife.date/products': angular@17,nginx@1.25
+```
+
+### Entity Pages
+
+Add the `EntityEndOfLifeCard` to the EntityPage.
+
+You could use this directly on components like this
+
+```tsx
+// packages/app/src/components/catalog/EntityPage.tsx
+
+import { EntityEndOfLifeCard } from '@dweber019/backstage-plugin-endoflife';
+
+const overviewContent = (
+  <Grid container spacing={3} alignItems="stretch">
+    {entityWarningContent}
+    ...
+    <EntitySwitch>
+      <EntitySwitch.Case if={hasLabels}>
+        <Grid item md={4} xs={12}>
+          <EntityLabelsCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+    <EntitySwitch>
+      <EntitySwitch.Case if={isEndOfLifeAvailable}>
+        <Grid item md={6}>
+          <EntityEndOfLifeCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+    ...
+  </Grid>
+);
+```
+
+or if you have resources representing technologies like databases or angular, you could use
+
+```tsx
+// packages/app/src/components/catalog/EntityPage.tsx
+
+import { EntityEndOfLifeCard } from '@dweber019/backstage-plugin-endoflife';
+
+const resourcePage = (
+  <EntityLayoutWrapper>
+    <EntityLayout.Route path="/" title="Overview">
+      <Grid container spacing={3} alignItems="stretch">
+        {entityWarningContent}
+        ...
+        <EntitySwitch>
+          <EntitySwitch.Case if={isEndOfLifeAvailable}>
+            <Grid item md={6}>
+              <EntityEndOfLifeCard variant="gridItem" />
+            </Grid>
+          </EntitySwitch.Case>
+        </EntitySwitch>
+      </Grid>
+    </EntityLayout.Route>
+    ...
+  </EntityLayoutWrapper>
+);
+```
+
+## Troubleshooting
+
+### Behavior 'endoflife.date/products': angular
+
+Using this annotation will result in a call to [Get all details](https://endoflife.date/docs/api).
+
+### Behavior 'endoflife.date/products': angular@17
+
+Using this annotation will result in a call to [Single cycle details](https://endoflife.date/docs/api).
+
+### Behavior 'endoflife.date/products': angular@17,nginx
+
+Using this annotation will result in multiple calls to the respective behavior above, depending on if the version is defined.
+
+### Wrong or missing data
+
+All data is comming from [endoflife.date](https://endoflife.date/) and can be wrong or missing.  
+Please correct this by [contributing](https://endoflife.date/contribute) back to the community.
