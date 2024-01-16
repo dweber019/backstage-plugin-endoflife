@@ -2,6 +2,8 @@ import {
   createApiFactory,
   createPlugin,
   createRoutableExtension,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { rootRouteRef } from './routes';
 import { endOfLifeApiRef, EndOfLifeClient } from './api';
@@ -12,9 +14,16 @@ export const endOfLifePlugin = createPlugin({
   apis: [
     createApiFactory({
       api: endOfLifeApiRef,
-      deps: {},
-      factory() {
-        return new EndOfLifeClient({ baseUrl: 'https://endoflife.date' });
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory({ discoveryApi, fetchApi }) {
+        return new EndOfLifeClient({
+          baseUrl: 'https://endoflife.date',
+          discoveryApi,
+          fetchApi,
+        });
       },
     }),
   ],

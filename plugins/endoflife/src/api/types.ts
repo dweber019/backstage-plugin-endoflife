@@ -87,6 +87,18 @@ export interface EndOfLifeApi {
   getAnnotationProducts(
     annotationProducts: AnnotationProducts,
   ): Promise<EndOfLifeProduct>;
+  /**
+   * Get end of life data by URL location.
+   *
+   * @public
+   */
+  getFromURL(url: string): Promise<EndOfLifeProduct>;
+  /**
+   * Get end of life data by source location.
+   *
+   * @public
+   */
+  getFromSource(fileUrl: string): Promise<EndOfLifeProduct>;
 }
 
 /**

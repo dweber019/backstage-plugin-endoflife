@@ -1,17 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   MissingAnnotationEmptyState,
   useEntity,
 } from '@backstage/plugin-catalog-react';
-import { ApiEntity } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model';
 import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
-import { endOfLifeApiRef, EndOfLifeProduct } from '../../api';
-import {
-  extractEndOfLifeAvailableAnnotation,
-  extractProducts,
-} from '../../conditions';
-import { useAsync } from 'react-use';
-import { END_OF_LIFE_ANNOTATION } from '../../constants';
+import { isEndOfLifeAvailable } from '../../conditions';
+import { END_OF_LIFE_PRODUCTS_ANNOTATION } from '../../constants';
 import {
   InfoCard,
   Progress,
@@ -30,6 +25,7 @@ import './EntityEndOfLifeCard.css';
 import { Grid, IconButton, Tooltip } from '@material-ui/core';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { HeightWidthType } from 'vis-timeline';
+import { useEndOfLife } from '../../hooks';
 
 export type EntityEndOfLifeCardProps = {
   maxHeight?: HeightWidthType;
@@ -38,28 +34,13 @@ export type EntityEndOfLifeCardProps = {
 export const EntityEndOfLifeCard = ({
   maxHeight = 400,
 }: EntityEndOfLifeCardProps) => {
-  const { entity } = useEntity<ApiEntity>();
-  const endOfLifeApi = useApi(endOfLifeApiRef);
+  const { entity } = useEntity<Entity>();
   const appThemeApi = useApi(appThemeApiRef);
-  const productsAnnotation = extractEndOfLifeAvailableAnnotation(entity);
-
-  const { products, productsWithoutVersion } = useMemo(() => {
-    if (!productsAnnotation) return {};
-    return {
-      products: extractProducts(productsAnnotation),
-      productsWithoutVersion: extractProducts(productsAnnotation)
-        .map(item => item.product)
-        .join(', '),
-    };
-  }, [productsAnnotation]);
-
-  const { value, loading, error } = useAsync(async () => {
-    if (!products) return [] as EndOfLifeProduct;
-    return endOfLifeApi.getAnnotationProducts(products);
-  }, [products]);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const timelineRef = useRef<Vis | null>(null);
+
+  const { value, loading, error, title, link } = useEndOfLife();
 
   const initTimeline = useCallback(() => {
     if (!containerRef.current) return;
@@ -89,10 +70,10 @@ export const EntityEndOfLifeCard = ({
     };
   }, [containerRef, value, initTimeline]);
 
-  if (productsAnnotation === undefined) {
+  if (!isEndOfLifeAvailable(entity)) {
     return (
       <MissingAnnotationEmptyState
-        annotation={END_OF_LIFE_ANNOTATION}
+        annotation={END_OF_LIFE_PRODUCTS_ANNOTATION}
         readMoreUrl="https://github.com/dweber019/backstage-plugin-endoflife"
       />
     );
@@ -103,19 +84,15 @@ export const EntityEndOfLifeCard = ({
   if (error) {
     return <ResponseErrorPanel error={error} />;
   }
-  if (!value || !products) {
-    return (
-      <WarningPanel
-        title={`Missing end of life data for products ${productsWithoutVersion}`}
-      />
-    );
+  if (!value) {
+    return <WarningPanel title="Missing end of life data for annotation" />;
   }
 
   return (
     <InfoCard
       title={
         <Grid container justifyContent="space-between" alignContent="center">
-          <Grid item>{`End of life for ${productsWithoutVersion}`}</Grid>
+          <Grid item>{`End of life for ${title}`}</Grid>
           <Grid item>
             <Tooltip
               title={
@@ -132,11 +109,8 @@ export const EntityEndOfLifeCard = ({
         </Grid>
       }
       deepLink={{
-        title: `View more for ${productsWithoutVersion}`,
-        link:
-          products.length === 1
-            ? endOfLifeApi.getProductLink(products[0].product)
-            : endOfLifeApi.getLink(),
+        title: `View more for ${title}`,
+        link: `${link}`,
       }}
       noPadding
     >

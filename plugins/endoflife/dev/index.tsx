@@ -6,6 +6,7 @@ import { endOfLifeApiRef, endOfLifePlugin, EntityEndOfLifeCard } from '../src';
 import { Content, PageWithHeader } from '@backstage/core-components';
 import { DateLegend } from '../src/components/DateLegend/DateLegend';
 import { TestEndOfLifeClient } from './TestEndOfLifeClient';
+import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
 const entityTemplate = (productsAnnotation: string): Entity => {
   return {
@@ -15,6 +16,36 @@ const entityTemplate = (productsAnnotation: string): Entity => {
       name: 'example',
       annotations: {
         'endoflife.date/products': productsAnnotation,
+      },
+    },
+    spec: {},
+  };
+};
+
+const entityUrlTemplate = (url: string): Entity => {
+  return {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Resource',
+    metadata: {
+      name: 'example',
+      annotations: {
+        'endoflife.date/url-location': url,
+      },
+    },
+    spec: {},
+  };
+};
+
+const entitySourceTemplate = (source: string): Entity => {
+  return {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Resource',
+    metadata: {
+      name: 'example',
+      annotations: {
+        'endoflife.date/source-location': source,
+        'backstage.io/source-location':
+          'url:https://github.com/dweber019/backstage-plugin-endoflife/tree/master/',
       },
     },
     spec: {},
@@ -53,9 +84,16 @@ const builder = createDevApp()
   .registerPlugin(endOfLifePlugin)
   .registerApi({
     api: endOfLifeApiRef,
-    deps: {},
-    factory: () =>
-      new TestEndOfLifeClient({ baseUrl: 'https://endoflife.date' }),
+    deps: {
+      discoveryApi: discoveryApiRef,
+      fetchApi: fetchApiRef,
+    },
+    factory: ({ discoveryApi, fetchApi }) =>
+      new TestEndOfLifeClient({
+        baseUrl: 'https://endoflife.date',
+        discoveryApi,
+        fetchApi,
+      }),
   })
   .addPage({
     element: (
@@ -67,6 +105,36 @@ const builder = createDevApp()
     ),
     title: 'DateLegend',
     path: '/datelegend',
+  })
+  .addPage({
+    element: (
+      <EntityProvider
+        entity={entityUrlTemplate(
+          'https://raw.githubusercontent.com/dweber019/backstage-plugin-endoflife/main/plugins/endoflife/dev/url-location-example.json',
+        )}
+      >
+        <PageWithHeader title="Test" themeId="tool">
+          <Content>
+            <EntityEndOfLifeCard />
+          </Content>
+        </PageWithHeader>
+      </EntityProvider>
+    ),
+    title: 'url-location',
+    path: '/url-location',
+  })
+  .addPage({
+    element: (
+      <EntityProvider entity={entitySourceTemplate('./versions.json')}>
+        <PageWithHeader title="Test" themeId="tool">
+          <Content>
+            <EntityEndOfLifeCard />
+          </Content>
+        </PageWithHeader>
+      </EntityProvider>
+    ),
+    title: 'source-location',
+    path: '/source-location',
   })
   .addPage({
     element: (
