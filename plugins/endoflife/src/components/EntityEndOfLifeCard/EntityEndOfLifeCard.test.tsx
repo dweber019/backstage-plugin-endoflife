@@ -5,6 +5,8 @@ import React from 'react';
 import { EntityEndOfLifeCard } from './EntityEndOfLifeCard';
 import { EndOfLifeApi, endOfLifeApiRef } from '../../api';
 import { AppThemeApi, appThemeApiRef } from '@backstage/core-plugin-api';
+import { scmIntegrationsApiRef } from '@backstage/integration-react';
+import { ScmIntegrationRegistry } from '@backstage/integration';
 
 describe('EntityEndOfLifeCard', () => {
   const mockEndOfLifeApi: jest.Mocked<EndOfLifeApi> = {
@@ -26,12 +28,30 @@ describe('EntityEndOfLifeCard', () => {
     getProduct: jest.fn(),
     getProductLink: jest.fn().mockReturnValue('https://endoflife.date/rhel'),
     getProducts: jest.fn(),
+    getFromURL: jest.fn(),
+    getFromSource: jest.fn(),
   };
   const mockAppThemeApi: jest.Mocked<AppThemeApi> = {
     activeThemeId$: jest.fn(),
     getActiveThemeId: jest.fn(),
     getInstalledThemes: jest.fn(),
     setActiveThemeId: jest.fn(),
+  };
+  const mockScmIntegrationRegistry: jest.Mocked<ScmIntegrationRegistry> = {
+    awsS3: jest.fn() as any,
+    azure: jest.fn() as any,
+    bitbucket: jest.fn() as any,
+    bitbucketCloud: jest.fn() as any,
+    bitbucketServer: jest.fn() as any,
+    byHost: jest.fn() as any,
+    byUrl: jest.fn(),
+    gerrit: jest.fn() as any,
+    gitea: jest.fn() as any,
+    github: jest.fn() as any,
+    gitlab: jest.fn() as any,
+    list: jest.fn(),
+    resolveEditUrl: jest.fn(),
+    resolveUrl: jest.fn(),
   };
 
   const endOfLifeAnnotation = { 'endoflife.date/products': 'rhel' };
@@ -49,6 +69,7 @@ describe('EntityEndOfLifeCard', () => {
         apis={[
           [endOfLifeApiRef, mockEndOfLifeApi],
           [appThemeApiRef, mockAppThemeApi],
+          [scmIntegrationsApiRef, mockScmIntegrationRegistry],
         ]}
       >
         <EntityProvider entity={mockEntity}>
@@ -77,6 +98,7 @@ describe('EntityEndOfLifeCard', () => {
         apis={[
           [endOfLifeApiRef, mockEndOfLifeApi],
           [appThemeApiRef, mockAppThemeApi],
+          [scmIntegrationsApiRef, mockScmIntegrationRegistry],
         ]}
       >
         <EntityProvider entity={mockEntity}>

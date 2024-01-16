@@ -16,7 +16,7 @@ This plugin will show end of life data for entities from [endoflife.date](https:
 yarn --cwd packages/app add @dweber019/backstage-plugin-endoflife
 ```
 
-### Annotation
+### Annotations
 
 You can use the annotation `endoflife.date/products` to define products at [endoflife.date](https://endoflife.date/).  
 Use the product name in the [url address (e.g. angular)](https://endoflife.date/angular) for your annotation.
@@ -27,7 +27,7 @@ kind: 'Resource'
 metadata:
   name: 'technology-radar-angular'
   annotations:
-    'endoflife.date/products': angular
+    endoflife.date/products: angular
 ```
 
 You can even use multiple products with a comma separated list.
@@ -38,7 +38,7 @@ kind: 'Component'
 metadata:
   name: 'angular-app'
   annotations:
-    'endoflife.date/products': angular,nginx
+    endoflife.date/products: angular,nginx
 ```
 
 Additionally, you can specify the version by using the [release column](https://endoflife.date/angular) (in the API called cycle).
@@ -49,8 +49,36 @@ kind: 'Component'
 metadata:
   name: 'angular-app'
   annotations:
-    'endoflife.date/products': angular@17,nginx@1.25
+    endoflife.date/products: angular@17,nginx@1.25
 ```
+
+In addition to loading information from [endoflife.date](https://endoflife.date/) you can load information from URL's
+or your repository by providing the annotations `endoflife.date/url-location` or `endoflife.date/source-location` and
+using the type `EndOfLifeCycle` at `plugins/endoflife/src/api/types.ts`.
+
+```yaml
+apiVersion: 'backstage.io/v1alpha1'
+kind: 'Component'
+metadata:
+  name: 'angular-app'
+  annotations:
+    endoflife.date/url-location: https://gist.githubusercontent.com/dweber019/.../raw/.../versions.json
+```
+
+```yaml
+apiVersion: 'backstage.io/v1alpha1'
+kind: 'Component'
+metadata:
+  name: 'angular-app'
+  annotations:
+    endoflife.date/source-location: /versions.json
+```
+
+> The `endoflife.date/source-location` has to be relative to your source repository
+
+> To use the `endoflife.date/source-location`, you need to install the [backend plugin](../endoflife-backend)
+
+> The annotations can't be combined and the order is `endoflife.date/products`, `endoflife.date/url-location`, `endoflife.date/source-location`
 
 ### Entity Pages
 
@@ -112,6 +140,9 @@ const resourcePage = (
   </EntityLayoutWrapper>
 );
 ```
+
+or if you have API entities you could use the annotation `endoflife.date/source-location`
+to make version lifecycles visible to consumers.
 
 ## Troubleshooting
 

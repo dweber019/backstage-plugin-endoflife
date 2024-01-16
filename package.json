@@ -12,8 +12,9 @@
     "node": "18 || 20"
   },
   "scripts": {
-    "dev": "concurrently \"yarn start\"",
-    "start": "yarn workspace @dweber019/backstage-plugin-endoflife start",
+    "dev": "concurrently \"yarn start:frontend\" \"yarn start:backend\"",
+    "start:frontend": "yarn workspace @dweber019/backstage-plugin-endoflife start",
+    "start:backend": "yarn workspace @dweber019/backstage-plugin-endoflife-backend start",
     "start:ci": "concurrently \"yarn start\"",
     "build": "backstage-cli repo build --all",
     "tsc": "tsc",

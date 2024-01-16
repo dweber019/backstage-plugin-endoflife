@@ -6,6 +6,7 @@ import {
   EndOfLifeProduct,
   EndOfLifeProducts,
 } from './types';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 
 /**
  * Options for creating a EndOfLifeClient client.
@@ -14,7 +15,13 @@ import {
  */
 export interface EndOfLifeClientOptions {
   baseUrl: string;
+  discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
 }
+
+const initRequestOption = {
+  headers: { Accept: `application/json` },
+};
 
 /**
  * An implementation of the EndOfLifeApi that talks to https://endoflife.data.
@@ -23,15 +30,17 @@ export interface EndOfLifeClientOptions {
  */
 export class EndOfLifeClient implements EndOfLifeApi {
   private readonly baseUrl: string;
+  private readonly discoveryApi: DiscoveryApi;
+  private readonly fetchApi: FetchApi;
 
   constructor(options: EndOfLifeClientOptions) {
     this.baseUrl = options.baseUrl;
+    this.discoveryApi = options.discoveryApi;
+    this.fetchApi = options.fetchApi;
   }
 
   async getProducts(): Promise<EndOfLifeProducts> {
-    const res = await fetch(`${this.baseUrl}/api/all.json`, {
-      headers: { Accept: `application/json` },
-    });
+    const res = await fetch(`${this.baseUrl}/api/all.json`, initRequestOption);
 
     if (!res.ok) {
       throw await ResponseError.fromResponse(res);
@@ -43,9 +52,7 @@ export class EndOfLifeClient implements EndOfLifeApi {
   async getProduct(product: string): Promise<EndOfLifeProduct> {
     const res = await fetch(
       `${this.baseUrl}/api/${product.toLowerCase()}.json`,
-      {
-        headers: { Accept: `application/json` },
-      },
+      initRequestOption,
     );
 
     if (!res.ok) {
@@ -65,9 +72,7 @@ export class EndOfLifeClient implements EndOfLifeApi {
       `${
         this.baseUrl
       }/api/${product.toLowerCase()}/${cycle.toLowerCase()}.json`,
-      {
-        headers: { Accept: `application/json` },
-      },
+      initRequestOption,
     );
 
     if (!res.ok) {
@@ -105,5 +110,28 @@ export class EndOfLifeClient implements EndOfLifeApi {
         return this.getProduct(annotationProduct.product);
       }),
     ).then(response => response.flat());
+  }
+
+  async getFromURL(url: string) {
+    const res = await fetch(url, initRequestOption);
+
+    if (!res.ok) {
+      throw await ResponseError.fromResponse(res);
+    }
+
+    return (await res.json()) as EndOfLifeProduct;
+  }
+
+  async getFromSource(fileUrl: string) {
+    const baseUrl = await this.discoveryApi.getBaseUrl('endoflife');
+    const targetUrl = `${baseUrl}/file?url=${encodeURIComponent(fileUrl)}`;
+
+    const res = await this.fetchApi.fetch(targetUrl);
+
+    if (!res.ok) {
+      throw await ResponseError.fromResponse(res);
+    }
+
+    return (await res.json()) as EndOfLifeProduct;
   }
 }

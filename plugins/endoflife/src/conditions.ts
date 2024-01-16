@@ -1,21 +1,47 @@
 import { Entity } from '@backstage/catalog-model';
-import { END_OF_LIFE_ANNOTATION } from './constants';
+import {
+  END_OF_LIFE_PRODUCTS_ANNOTATION,
+  END_OF_LIFE_SOURCE_LOCATION_ANNOTATION,
+  END_OF_LIFE_URL_LOCATION_ANNOTATION,
+} from './constants';
 import { AnnotationProducts } from './api';
 
 /**
  * @public
  */
 export function isEndOfLifeAvailable(entity: Entity): boolean {
-  return Boolean(extractEndOfLifeAvailableAnnotation(entity));
+  return (
+    Boolean(extractEndOfLifeProductsAnnotation(entity)) ||
+    Boolean(extractEndOfLifeUrlLocationAnnotation(entity)) ||
+    Boolean(extractEndOfLifeSourceLocationAnnotation(entity))
+  );
 }
 
 /**
  * @public
  */
-export function extractEndOfLifeAvailableAnnotation(
+export function extractEndOfLifeProductsAnnotation(
   entity: Entity,
 ): string | undefined {
-  return entity.metadata.annotations?.[END_OF_LIFE_ANNOTATION];
+  return entity.metadata.annotations?.[END_OF_LIFE_PRODUCTS_ANNOTATION];
+}
+
+/**
+ * @public
+ */
+export function extractEndOfLifeUrlLocationAnnotation(
+  entity: Entity,
+): string | undefined {
+  return entity.metadata.annotations?.[END_OF_LIFE_URL_LOCATION_ANNOTATION];
+}
+
+/**
+ * @public
+ */
+export function extractEndOfLifeSourceLocationAnnotation(
+  entity: Entity,
+): string | undefined {
+  return entity.metadata.annotations?.[END_OF_LIFE_SOURCE_LOCATION_ANNOTATION];
 }
 
 /**
