@@ -87,7 +87,7 @@ export const calculateTimelineItems = (
   return endOfLifeProduct
     .map((cycleItem, index) => {
       const dataItems: DataItem[] = [];
-      const dateNow = DateTime.now().toISO();
+      const dateNow = DateTime.now();
       let itemAdded = false;
 
       // Span release to support
@@ -96,7 +96,7 @@ export const calculateTimelineItems = (
         dataItems.push({
           id: `${index}-support`,
           content: 'Support',
-          title: 'Support',
+          title: `Support (${cycleItem.releaseDate} - ${cycleItem.support})`,
           group: cycleItem.cycle,
           start: cycleItem.releaseDate,
           end: cycleItem.support as string,
@@ -108,10 +108,10 @@ export const calculateTimelineItems = (
         dataItems.push({
           id: `${index}-support`,
           content: 'Support',
-          title: 'Support',
+          title: `Support (${cycleItem.releaseDate} - end date not defined)`,
           group: cycleItem.cycle,
           start: cycleItem.releaseDate,
-          end: dateNow,
+          end: dateNow.toISO(),
           className: 'dateOk',
         });
       }
@@ -122,14 +122,15 @@ export const calculateTimelineItems = (
         (isString(cycleItem.support) || cycleItem.releaseDate)
       ) {
         itemAdded = true;
+        const startDate = isString(cycleItem.support)
+          ? (cycleItem.support as string)
+          : cycleItem.releaseDate;
         dataItems.push({
           id: `${index}-eol`,
           content: 'EoL',
-          title: 'EoL',
+          title: `EoL (${startDate} - ${cycleItem.eol})`,
           group: cycleItem.cycle,
-          start: isString(cycleItem.support)
-            ? (cycleItem.support as string)
-            : cycleItem.releaseDate,
+          start: startDate,
           end: cycleItem.eol as string,
           className: getDateClass(cycleItem.eol as string),
         });
@@ -139,15 +140,16 @@ export const calculateTimelineItems = (
         (isString(cycleItem.support) || cycleItem.releaseDate)
       ) {
         itemAdded = true;
+        const startDate = isString(cycleItem.support)
+          ? (cycleItem.support as string)
+          : cycleItem.releaseDate;
         dataItems.push({
           id: `${index}-eol`,
           content: 'EoL',
-          title: 'EoL',
+          title: `EoL (${startDate} - end date not defined)`,
           group: cycleItem.cycle,
-          start: isString(cycleItem.support)
-            ? (cycleItem.support as string)
-            : cycleItem.releaseDate,
-          end: dateNow,
+          start: startDate,
+          end: dateNow.toISO(),
           className: 'dateOk',
         });
       }
@@ -158,14 +160,15 @@ export const calculateTimelineItems = (
         (isString(cycleItem.eol) || cycleItem.releaseDate)
       ) {
         itemAdded = true;
+        const startDate = isString(cycleItem.eol)
+          ? (cycleItem.eol as string)
+          : cycleItem.releaseDate;
         dataItems.push({
           id: `${index}-extendedSupport`,
           content: 'Extended support',
-          title: 'Extended support',
+          title: `Extended support (${startDate} - ${cycleItem.extendedSupport})`,
           group: cycleItem.cycle,
-          start: isString(cycleItem.eol)
-            ? (cycleItem.eol as string)
-            : cycleItem.releaseDate,
+          start: startDate,
           end: cycleItem.extendedSupport as string,
           className: getDateClass(cycleItem.extendedSupport as string),
         });
@@ -175,30 +178,37 @@ export const calculateTimelineItems = (
         (isString(cycleItem.eol) || cycleItem.releaseDate)
       ) {
         itemAdded = true;
+        const startDate = isString(cycleItem.eol)
+          ? (cycleItem.eol as string)
+          : cycleItem.releaseDate;
         dataItems.push({
           id: `${index}-extendedSupport`,
           content: 'Extended support',
-          title: 'Extended support',
+          title: `Extended support (${startDate} - end date not defined)`,
           group: cycleItem.cycle,
-          start: isString(cycleItem.eol)
-            ? (cycleItem.eol as string)
-            : cycleItem.releaseDate,
-          end: dateNow,
+          start: startDate,
+          end: dateNow.toISO(),
           className: 'dateOk',
         });
       }
 
       // If no span was added
       if (!itemAdded) {
+        const endDate = isBooleanAnd(cycleItem.discontinued, true)
+          ? cycleItem.latestReleaseDate ?? cycleItem.releaseDate
+          : dateNow.toISO();
+        const endDateTitle = isBooleanAnd(cycleItem.discontinued, true)
+          ? cycleItem.latestReleaseDate ?? cycleItem.releaseDate
+          : 'end date not defined';
         dataItems.push({
           id: `${index}-support`,
           content: 'Support',
-          title: 'Support',
+          title: `Support ${
+            isBooleanAnd(cycleItem.discontinued, true) ? 'discontinued ' : ''
+          }(${cycleItem.releaseDate} - ${endDateTitle})`,
           group: cycleItem.cycle,
           start: cycleItem.releaseDate,
-          end: isBooleanAnd(cycleItem.discontinued, true)
-            ? cycleItem.latestReleaseDate ?? cycleItem.releaseDate
-            : dateNow,
+          end: endDate,
           className: isBooleanAnd(cycleItem.discontinued, true)
             ? getDateClass(cycleItem.latestReleaseDate ?? cycleItem.releaseDate)
             : 'dateOk',
