@@ -6,16 +6,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.error.light,
     borderColor: theme.palette.error.dark,
     color: theme.palette.common.white,
+    marginBottom: theme.spacing(0),
   },
   dateOk: {
     backgroundColor: theme.palette.success.light,
     borderColor: theme.palette.success.dark,
     color: theme.palette.common.white,
+    marginBottom: theme.spacing(0),
   },
   dateClose: {
     backgroundColor: theme.palette.warning.light,
     borderColor: theme.palette.warning.dark,
     color: theme.palette.common.white,
+    marginBottom: theme.spacing(0),
   },
 }));
 

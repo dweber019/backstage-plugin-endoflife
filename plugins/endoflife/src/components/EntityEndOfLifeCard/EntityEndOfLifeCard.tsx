@@ -22,10 +22,10 @@ import {
   calculateTimelineItems,
 } from './helper';
 import './EntityEndOfLifeCard.css';
-import { Grid, IconButton, Tooltip } from '@material-ui/core';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import { Grid } from '@material-ui/core';
 import { HeightWidthType } from 'vis-timeline';
 import { useEndOfLife } from '../../hooks';
+import { HelpText } from '../HelpText/HelpText';
 
 export type EntityEndOfLifeCardProps = {
   maxHeight?: HeightWidthType;
@@ -91,20 +91,11 @@ export const EntityEndOfLifeCard = ({
   return (
     <InfoCard
       title={
-        <Grid container justifyContent="space-between" alignContent="center">
+        <Grid container justifyContent="space-between">
           <Grid item>{`End of life for ${title}`}</Grid>
           <Grid item>
-            <Tooltip
-              title={
-                <div style={{ paddingTop: '8px' }}>
-                  <DateLegend />
-                </div>
-              }
-            >
-              <IconButton style={{ padding: 0 }}>
-                <HelpOutlineIcon />
-              </IconButton>
-            </Tooltip>
+            <DateLegend />
+            <HelpText />
           </Grid>
         </Grid>
       }

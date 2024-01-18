@@ -4,7 +4,12 @@ import { renderWithEffects, TestApiProvider } from '@backstage/test-utils';
 import React from 'react';
 import { EntityEndOfLifeCard } from './EntityEndOfLifeCard';
 import { EndOfLifeApi, endOfLifeApiRef } from '../../api';
-import { AppThemeApi, appThemeApiRef } from '@backstage/core-plugin-api';
+import {
+  AppThemeApi,
+  appThemeApiRef,
+  ConfigApi,
+  configApiRef,
+} from '@backstage/core-plugin-api';
 import { scmIntegrationsApiRef } from '@backstage/integration-react';
 import { ScmIntegrationRegistry } from '@backstage/integration';
 
@@ -31,28 +36,15 @@ describe('EntityEndOfLifeCard', () => {
     getFromURL: jest.fn(),
     getFromSource: jest.fn(),
   };
-  const mockAppThemeApi: jest.Mocked<AppThemeApi> = {
-    activeThemeId$: jest.fn(),
+  const mockAppThemeApi = {
     getActiveThemeId: jest.fn(),
-    getInstalledThemes: jest.fn(),
-    setActiveThemeId: jest.fn(),
-  };
-  const mockScmIntegrationRegistry: jest.Mocked<ScmIntegrationRegistry> = {
-    awsS3: jest.fn() as any,
-    azure: jest.fn() as any,
-    bitbucket: jest.fn() as any,
-    bitbucketCloud: jest.fn() as any,
-    bitbucketServer: jest.fn() as any,
-    byHost: jest.fn() as any,
-    byUrl: jest.fn(),
-    gerrit: jest.fn() as any,
-    gitea: jest.fn() as any,
-    github: jest.fn() as any,
-    gitlab: jest.fn() as any,
-    list: jest.fn(),
-    resolveEditUrl: jest.fn(),
+  } as unknown as AppThemeApi;
+  const mockScmIntegrationRegistry = {
     resolveUrl: jest.fn(),
-  };
+  } as unknown as ScmIntegrationRegistry;
+  const mockConfigApi = {
+    getOptionalString: jest.fn(),
+  } as unknown as ConfigApi;
 
   const endOfLifeAnnotation = { 'endoflife.date/products': 'rhel' };
 
@@ -70,6 +62,7 @@ describe('EntityEndOfLifeCard', () => {
           [endOfLifeApiRef, mockEndOfLifeApi],
           [appThemeApiRef, mockAppThemeApi],
           [scmIntegrationsApiRef, mockScmIntegrationRegistry],
+          [configApiRef, mockConfigApi],
         ]}
       >
         <EntityProvider entity={mockEntity}>
@@ -99,6 +92,7 @@ describe('EntityEndOfLifeCard', () => {
           [endOfLifeApiRef, mockEndOfLifeApi],
           [appThemeApiRef, mockAppThemeApi],
           [scmIntegrationsApiRef, mockScmIntegrationRegistry],
+          [configApiRef, mockConfigApi],
         ]}
       >
         <EntityProvider entity={mockEntity}>

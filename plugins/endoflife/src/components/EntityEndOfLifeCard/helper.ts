@@ -127,8 +127,8 @@ export const calculateTimelineItems = (
           : cycleItem.releaseDate;
         dataItems.push({
           id: `${index}-eol`,
-          content: 'EoL',
-          title: `EoL (${startDate} - ${cycleItem.eol})`,
+          content: 'EOL',
+          title: `EOL (${startDate} - ${cycleItem.eol})`,
           group: cycleItem.cycle,
           start: startDate,
           end: cycleItem.eol as string,
@@ -145,8 +145,8 @@ export const calculateTimelineItems = (
           : cycleItem.releaseDate;
         dataItems.push({
           id: `${index}-eol`,
-          content: 'EoL',
-          title: `EoL (${startDate} - end date not defined)`,
+          content: 'EOL',
+          title: `EOL (${startDate} - end date not defined)`,
           group: cycleItem.cycle,
           start: startDate,
           end: dateNow.toISO(),

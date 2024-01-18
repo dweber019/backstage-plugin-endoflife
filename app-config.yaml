@@ -23,3 +23,8 @@ backend:
     allow:
       - host: localhost
 
+#endOfLife:
+#  helpText: |
+#    # Custom title
+#
+#    [link](https://google.ch) with some text and everything.

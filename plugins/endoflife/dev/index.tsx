@@ -4,7 +4,6 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
 import { endOfLifeApiRef, endOfLifePlugin, EntityEndOfLifeCard } from '../src';
 import { Content, PageWithHeader } from '@backstage/core-components';
-import { DateLegend } from '../src/components/DateLegend/DateLegend';
 import { TestEndOfLifeClient } from './TestEndOfLifeClient';
 import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
@@ -94,17 +93,6 @@ const builder = createDevApp()
         discoveryApi,
         fetchApi,
       }),
-  })
-  .addPage({
-    element: (
-      <PageWithHeader title="Test" themeId="tool">
-        <Content>
-          <DateLegend />
-        </Content>
-      </PageWithHeader>
-    ),
-    title: 'DateLegend',
-    path: '/datelegend',
   })
   .addPage({
     element: (

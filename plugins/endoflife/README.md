@@ -2,14 +2,14 @@
 
 Welcome to the end of life plugin!
 
-This plugin will show end of life data for entities from [endoflife.date](https://endoflife.date/).
+This plugin will show end of life data for entities from [endoflife.date](https://endoflife.date/) or your own data provided by a URL or integrations.
 
 ![OpenShift](https://raw.githubusercontent.com/dweber019/backstage-plugin-endoflife/main/plugins/endoflife/docs/example-open-shift.png)
 ![Python](https://raw.githubusercontent.com/dweber019/backstage-plugin-endoflife/main/plugins/endoflife/docs/example-python.png)
 
 ## Setup
 
-1. Install this plugin:
+Install this plugin:
 
 ```bash
 # From your Backstage root directory
@@ -143,6 +143,18 @@ const resourcePage = (
 
 or if you have API entities you could use the annotation `endoflife.date/source-location`
 to make version lifecycles visible to consumers.
+
+### Help text
+
+You can customize the help text in the right upper corner by using the following configuration in `app-config.yaml`
+
+```yaml
+endOfLife:
+  helpText: |
+    # Custom help text
+
+    You can use markdown if you like
+```
 
 ## Troubleshooting
 
