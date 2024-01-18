@@ -2607,7 +2607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.25.0, @backstage/cli@npm:^0.25.1":
+"@backstage/cli@npm:^0.25.1":
   version: 0.25.1
   resolution: "@backstage/cli@npm:0.25.1"
   dependencies:
@@ -2800,7 +2800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-components@npm:^0.13.10, @backstage/core-components@npm:^0.13.9":
+"@backstage/core-components@npm:^0.13.10":
   version: 0.13.10
   resolution: "@backstage/core-components@npm:0.13.10"
   dependencies:
@@ -2851,7 +2851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@npm:^1.8.1, @backstage/core-plugin-api@npm:^1.8.2":
+"@backstage/core-plugin-api@npm:^1.8.2":
   version: 1.8.2
   resolution: "@backstage/core-plugin-api@npm:1.8.2"
   dependencies:
@@ -2868,7 +2868,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/dev-utils@npm:^1.0.25":
+"@backstage/dev-utils@npm:^1.0.26":
   version: 1.0.26
   resolution: "@backstage/dev-utils@npm:1.0.26"
   dependencies:
@@ -2947,7 +2947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration-react@npm:^1.1.22, @backstage/integration-react@npm:^1.1.23":
+"@backstage/integration-react@npm:^1.1.23":
   version: 1.1.23
   resolution: "@backstage/integration-react@npm:1.1.23"
   dependencies:
@@ -3017,7 +3017,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-react@npm:^1.9.2, @backstage/plugin-catalog-react@npm:^1.9.3":
+"@backstage/plugin-catalog-react@npm:^1.9.3":
   version: 1.9.3
   resolution: "@backstage/plugin-catalog-react@npm:1.9.3"
   dependencies:
@@ -3122,7 +3122,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/test-utils@npm:^1.4.6":
+"@backstage/test-utils@npm:^1.4.7":
   version: 1.4.7
   resolution: "@backstage/test-utils@npm:1.4.7"
   dependencies:
@@ -3509,15 +3509,15 @@ __metadata:
   resolution: "@dweber019/backstage-plugin-endoflife@workspace:plugins/endoflife"
   dependencies:
     "@backstage/catalog-model": ^1.4.3
-    "@backstage/cli": ^0.25.0
-    "@backstage/core-components": ^0.13.9
-    "@backstage/core-plugin-api": ^1.8.1
-    "@backstage/dev-utils": ^1.0.25
+    "@backstage/cli": ^0.25.1
+    "@backstage/core-components": ^0.13.10
+    "@backstage/core-plugin-api": ^1.8.2
+    "@backstage/dev-utils": ^1.0.26
     "@backstage/errors": ^1.2.3
     "@backstage/integration": ^1.8.0
-    "@backstage/integration-react": ^1.1.22
-    "@backstage/plugin-catalog-react": ^1.9.2
-    "@backstage/test-utils": ^1.4.6
+    "@backstage/integration-react": ^1.1.23
+    "@backstage/plugin-catalog-react": ^1.9.3
+    "@backstage/test-utils": ^1.4.7
     "@material-ui/core": ^4.12.2
     "@material-ui/icons": ^4.9.1
     "@testing-library/jest-dom": ^5.10.1
@@ -19737,7 +19737,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root@workspace:."
   dependencies:
-    "@backstage/cli": ^0.25.0
+    "@backstage/cli": ^0.25.1
     "@changesets/cli": ^2.18.0
     "@spotify/prettier-config": ^12.0.0
     "@types/webpack": ^5.28.0
