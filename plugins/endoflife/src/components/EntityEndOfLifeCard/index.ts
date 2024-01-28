@@ -1,1 +1,0 @@
-export { EntityEndOfLifeCard } from './EntityEndOfLifeCard';
